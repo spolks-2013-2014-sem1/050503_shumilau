@@ -21,8 +21,13 @@ for opt, arg in opts:
    elif opt in ("-p", "--port"):
       PORT = int(arg);
 
-ServerSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM);
-ServerSocket.bind((ADDRESS,PORT));
+try:
+   ServerSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM);
+   ServerSocket.bind((ADDRESS,PORT));
+except socket.error as msg:
+    print("Failed to create a socket. Error #{0}: {1}".format(msg.errno, msg.strerror))
+    sys.exit(3)
+
 ServerSocket.listen(1);
 try:
    client, address = ServerSocket.accept();
