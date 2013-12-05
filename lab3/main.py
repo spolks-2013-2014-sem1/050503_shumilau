@@ -6,12 +6,16 @@ ADDRESS = ""
 PORT = 1337
 FILE = "file"
 BUFFSIZE = 64*1024
-helpmsg = "main.py [-a <address>] [-p <port>] -c|-s|-h"
+helpmsg = "main.py [-a <address>] [-p <port>] [-f <path/to/file>] -s|-c|-h"
 
 def server():
-   ServerSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM);
-   ServerSocket.bind((ADDRESS, PORT));
-   ServerSocket.listen(1);
+   try:
+      ServerSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM);
+      ServerSocket.bind((ADDRESS, PORT));
+      ServerSocket.listen(1);
+   except socket.error as msg:
+      print("Failed to create a socket. Error #{0}: {1}".format(msg.errno, msg.strerror));
+      sys.exit(3);
    SConnection, address = ServerSocket.accept();
    outputFile = open(FILE, "wb");
    while True:
@@ -30,7 +34,12 @@ def client():
       data = inputFile.read(BUFFSIZE);
       if not data:
          break;
-      ClientSocket.send(data);
+      try:
+         if ClientSocket.sendall(data):
+            break;
+      except:
+         print("Failed to send data.");
+         break;
    inputFile.close();
    ClientSocket.close();
 
