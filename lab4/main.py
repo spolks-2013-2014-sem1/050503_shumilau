@@ -45,8 +45,9 @@ def server(address, port, file, buffsize):
          recvLen += len(data);
          outputFile.write(data);
       else:
-         print(recvLen, '/', sendLen);
+         print(recvLen,"bytes recieved of", sendLen, "bytes total.");
    outputFile.close();
+   print("Complete!");
    SConnection.close();
 
 def client(address, port, file, buffsize):
@@ -69,7 +70,11 @@ def client(address, port, file, buffsize):
          sendOob = buffsize;
          if buffsize < 1024*1024:
             sendOob = 1024*1024/buffsize;
-         ClientSocket.send(b"!Q", socket.MSG_OOB);
+         try:
+            ClientSocket.send(b"!Q", socket.MSG_OOB);
+            print (sentLen, "bytes is sent.");
+         except socket.error as e:
+            print("Send OOB data error %s" % e);
          time.sleep(0.001);
    inputFile.close();
    ClientSocket.close();
