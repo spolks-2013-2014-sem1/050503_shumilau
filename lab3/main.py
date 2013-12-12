@@ -15,8 +15,7 @@ BUFFSIZE = 64*1024
 helpmsg = "main.py [-a <address>] [-p <port>] [-f <path/to/file>] -s|-c|-h"
 
 def srv():
-   ServerSocket = server.init();
-   SConnection, address = ServerSocket.accept();
+   SConnection  = server.init();
    outputFile = open(FILE, "wb");
    while True:
       data = SConnection.recv(BUFFSIZE);
