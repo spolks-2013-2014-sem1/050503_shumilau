@@ -1,6 +1,12 @@
 #!/usr/bin/python
 import socket
 import sys, getopt
+import os
+
+sys.path.insert(0,
+   os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+from SSoLNC_lib import server
+from SSoLNC_lib import client
 
 ADDRESS = ""
 PORT = 1337
@@ -8,14 +14,8 @@ FILE = "file"
 BUFFSIZE = 64*1024
 helpmsg = "main.py [-a <address>] [-p <port>] [-f <path/to/file>] -s|-c|-h"
 
-def server():
-   try:
-      ServerSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM);
-      ServerSocket.bind((ADDRESS, PORT));
-      ServerSocket.listen(1);
-   except socket.error as msg:
-      print("Failed to create a socket. Error #{0}: {1}".format(msg.errno, msg.strerror));
-      sys.exit(3);
+def srv():
+   ServerSocket = server.init();
    SConnection, address = ServerSocket.accept();
    outputFile = open(FILE, "wb");
    while True:
@@ -26,8 +26,8 @@ def server():
    outputFile.close();
    SConnection.close();
 
-def client():
-   ClientSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM);
+def clt():
+   ClientSocket = client.init();
    ClientSocket.connect((ADDRESS, PORT));
    inputFile = open(FILE, "rb");
    while True:
@@ -61,9 +61,9 @@ def main(argv):
       elif opt in ("-f", "--file"):
          FILE = arg;
       elif opt in ("-s", "--server"):
-         server();
+         srv();
       elif opt in ("-c", "--client"):
-         client();
+         clt();
 
 if __name__ == '__main__':
    main(sys.argv[1:])
