@@ -15,4 +15,5 @@ def init(address="", port=1337, isTCP=True):
 		sys.exit(3);
 	if isTCP:
 		ServerSocket.listen(5);
-	return ServerSocket;
+		SConnection, address = ServerSocket.accept();
+	return SConnection;

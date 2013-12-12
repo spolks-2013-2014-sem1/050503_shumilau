@@ -8,4 +8,5 @@ def init(address="", port=1337, isTCP=True):
 	else:
 		sockType = socket.SOCK_DGRAM;
 	ClientSocket = socket.socket(socket.AF_INET, sockType);
+	
 	return ClientSocket;

@@ -1,5 +1,3 @@
-#!/usr/bin/python
-
 def sigterm(signo, sigobj):
     print("SIGTERM: {0} Exitting...".format(signo));
     sys.exit(signo);
