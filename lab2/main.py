@@ -1,10 +1,14 @@
 #!/usr/bin/python
 import socket
 import sys, getopt
+import os
 
-ADDRESS = ""
-PORT = 1337
-SIZE = 512
+sys.path.insert(0,
+   os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+from SSoLNC_lib import server
+
+address = ""
+port = 1337
 helpmsg = "main.py [-a <address>] [-p <port>] [-h]"
 
 try:
@@ -17,22 +21,16 @@ for opt, arg in opts:
       print(helpmsg);
       sys.exit(0);
    elif opt in ("-a", "--address"):
-      ADDRESS = arg;
+      address = arg;
    elif opt in ("-p", "--port"):
-      PORT = int(arg);
+      port = int(arg);
 
-try:
-   ServerSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM);
-   ServerSocket.bind((ADDRESS,PORT));
-except socket.error as msg:
-    print("Failed to create a socket. Error #{0}: {1}".format(msg.errno, msg.strerror));
-    sys.exit(3);
+ServerSocket = server.init();
 
-ServerSocket.listen(1);
 try:
    client, address = ServerSocket.accept();
    while True:
-      data = client.recv(SIZE);
+      data = client.recv(1024);
       if data:
          client.send(data.lower());
       else:
